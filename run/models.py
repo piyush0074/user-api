@@ -6,6 +6,7 @@ from .base import BaseModel
 from django.contrib.auth.models import UserManager
 # Create your models here.
 
+
 class CustomUser(AbstractBaseUser,PermissionsMixin,BaseModel):
 
     class Meta:
@@ -16,8 +17,7 @@ class CustomUser(AbstractBaseUser,PermissionsMixin,BaseModel):
     first_name = models.CharField(max_length=15,null=False)
     last_name  = models.CharField(max_length=15)
     is_email_verified = models.BooleanField(default=False)
-    username = models.CharField(max_length=15,unique=True,null=False,default='xyz')
+    username = models.CharField(max_length=15,unique=True,null=False)
 
     USERNAME_FIELD = 'id'
-    #objects = UserManager()
     REQUIRED_FIELDS = ['username','email']
