@@ -1,9 +1,6 @@
 from .models import CustomUser
 import crypt
 
-import random
-
-
 def checkuser_id(request):
     try:
         id = request.query_params["id"]
@@ -51,16 +48,3 @@ def hashpass(plaintext):
 def get_user(request):
     result = CustomUser.objects.get(username=request)
     return result
-
-def check_email(request):
-    try:
-        email = request.query_params["email"]
-        result = CustomUser.objects.get(email=email,is_deleted=False)
-        return result
-    except:
-        result = None
-        return result
-
-def generate_otp():
-    otp = random.randint(100000,999999)
-    return otp
