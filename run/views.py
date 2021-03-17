@@ -1,6 +1,10 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
+
+from django.conf import settings
+from django.core.mail import send_mail
+
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
@@ -10,7 +14,13 @@ import datetime
 from .models import CustomUser
 from .serializer import CreateUser
 
-from .service import checkuser_id, hashpass, get_user
+from .service import checkuser_id, hashpass, get_user, check_email, generate_otp
+from .cache import save_otp, validate_otp
+
+from .JWT_token import *
+from rest_framework_simplejwt.views import TokenObtainPairView
+from rest_framework.permissions import AllowAny
+
 # Create your views here.
 
 
@@ -97,3 +107,41 @@ class deleteuser(APIView):
             data = {}
             data["Success"] = "Delete successful"
         return Response(data=data)
+
+
+class OTPGenerate(APIView):
+
+    def post(self,request):
+        result = check_email(request)
+        if result is None:
+            return Response({'email':'Email doesn''t exists.'},status=status.HTTP_404_NOT_FOUND)
+        else:
+            user_otp = str(generate_otp())
+            save_otp(result.email,user_otp)
+            subject = 'OTP'
+            email_from = settings.EMAIL_HOST_USER
+            recipient_list = [result.email, ] 
+            send_mail(subject,user_otp,email_from,recipient_list)
+            return Response({'OTP':'OTP send to the entered email.'},status=status.HTTP_200_OK)
+        return Response({'Result':'Failed'},status=status.HTTP_404_NOT_FOUND)
+
+class OTPValidate(APIView):
+
+    def post(self,request):
+        result = check_email(request)
+        if result is None:
+            return Response({'email':'Email doesnt exist.'},status=status.HTTP_404_NOT_FOUND)
+        else:
+            email = request.query_params["email"]
+            otp = request.data.get('otp')
+            if otp is None or otp == '':
+                return Response({'Result':'Please enter OTP'},status=status.HTTP_406_NOT_ACCEPTABLE)
+
+            activate = validate_otp(email,otp)
+            if activate:
+                obj = MyTokenObtainPairSerializer()
+                token = obj.get_token(result)
+                return Response({'access token':token},status=status.HTTP_200_OK)
+            else:
+                return Response({'Result':'worng OTP'},status=status.HTTP_406_NOT_ACCEPTABLE)
+
