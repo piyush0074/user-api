@@ -16,11 +16,13 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 from run import views 
+from django.views.generic import TemplateView
 from rest_framework_simplejwt.views import TokenRefreshView, TokenObtainPairView
 
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('',TemplateView.as_view(template_name='index.html')),
     path('ping/',views.ping.as_view()),
     path('adduser/',views.adduser.as_view()),
     path('getuser/',views.getuser.as_view()),
@@ -28,4 +30,7 @@ urlpatterns = [
     path('deleteuser/',views.deleteuser.as_view()),
     path('otp/',views.OTPGenerate.as_view()),
     path('otp_verify/',views.OTPValidate.as_view()),
+    path('sentry-debug/',views.trigger_error.as_view()),
+    path('newchat/',views.start.as_view()),
+    path('mychat/',views.loaduserchat.as_view()),
 ]

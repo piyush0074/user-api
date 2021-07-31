@@ -1,0 +1,27 @@
+{% load static %}
+<html>
+<head>
+    <link rel = "stylesheet" href = "{% static 'css/style.css' %}">
+</head>
+<body>
+    <div class="page">
+        <div class="list" id ="tmp">
+        <p>{{result.username}}</p>
+        <div id = "{{result.id}}">
+        {% for i in people %}
+            <p>{{i}}</p>
+        {% endfor %}
+        </div>
+        </div>
+        <div class="message">
+                <p>loading chat...</p>
+            </div>
+    </div>   
+<script src="https://www.gstatic.com/firebasejs/8.3.3/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.3.3/firebase-auth.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.3.3/firebase-database.js"></script>
+<script src="{% static 'js/index.js' %}"></script>
+
+
+</body>
+</html>

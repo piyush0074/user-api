@@ -40,10 +40,15 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'run',
-    'rest_framework',    
+    'rest_framework',
+    'corsheaders',    
 ]
 
+CORS_ORIGIN_ALLOW_ALL = True
+
 MIDDLEWARE = [
+    #'run.middleware.ResquestResponselog',
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -58,7 +63,7 @@ ROOT_URLCONF = 'custom_user.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': ['frontend/build'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -149,6 +154,9 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/2.2/howto/static-files/
 
 STATIC_URL = '/static/'
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR,'frontend/build/static'),    
+]
 
 
 # Email for sending OTP
@@ -193,3 +201,20 @@ JWT_AUTH = {
 SIMPLE_JWT = {
       'USER_ID_FIELD': 'email',
   }
+
+# Ratelimiter
+RATELIMIT_CACHE_PREFIX = 'rl'
+RATELIMIT_ENABLE = True
+RATELIMIT_USE_CACHE = 'default'
+RATELIMIT_VIEW = 'run.views.ratelimited'
+RATELIMIT_FAIL_OPEN = True
+
+#celery
+#CELERY_BROKER_URL = 'amqp://127.0.0.1:5672'
+'''CELERY_ACCEPT_CONTENT = ['json']
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_RESULT_SERIALIZER = 'json'
+
+CELERY_TIMEZONE = 'Asia/Kolkata'
+
+CELERY_BEAT_SCHEDULER = 'django_celery_beat.schedulers:DatabaseScheduler'''

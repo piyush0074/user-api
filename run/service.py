@@ -1,4 +1,4 @@
-from .models import CustomUser
+from .models import CustomUser, ConnectedUser
 import crypt
 
 import random
@@ -7,6 +7,7 @@ import random
 def checkuser_id(request):
     try:
         id = request.query_params["id"]
+        print('aa')
         result = CustomUser.objects.get(id=id,is_deleted=False)
         return result
     except:
@@ -64,3 +65,37 @@ def check_email(request):
 def generate_otp():
     otp = random.randint(100000,999999)
     return otp
+
+def checkusername(name):
+    try:
+        result = CustomUser.objects.get(username=name,is_deleted=False)
+        return result
+    except:
+        result = None
+        return result
+
+def check_connection(user1,user2):
+    try:
+        result = ConnectedUser.objects.get(username=user1,people__contains=[user2])
+        return True
+    except:
+        return False
+
+def connect_people(user1,user2):
+    person1 = ConnectedUser.objects.get(username=user1.username)
+    person1.people.append(user2.username)
+    person1.save()
+    person2 = ConnectedUser.objects.get(username=user2.username)
+    person2.people.append(user1.username)
+    person2.save()
+    id = [person1.id,person2.id]
+    return id
+
+def check_id(request):
+    try:
+        id = request.GET.get('id')
+        result = CustomUser.objects.get(id=id)
+        return result
+    except:
+        result = None
+        return result

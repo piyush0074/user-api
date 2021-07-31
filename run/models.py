@@ -4,6 +4,8 @@ from django.contrib.auth.models import (BaseUserManager,
                                         PermissionsMixin)
 from .base import BaseModel
 from django.contrib.auth.models import UserManager
+from django.contrib.postgres.fields import ArrayField
+
 # Create your models here.
 
 
@@ -21,3 +23,11 @@ class CustomUser(AbstractBaseUser,PermissionsMixin,BaseModel):
 
     USERNAME_FIELD = 'id'
     REQUIRED_FIELDS = ['username','email']
+
+class ConnectedUser(models.Model):
+    class Meta:
+        db_table = 'connect'
+    
+    username = models.CharField(max_length=15,unique=True,null=False)
+    people = ArrayField(models.CharField(max_length=15),null=True)
+

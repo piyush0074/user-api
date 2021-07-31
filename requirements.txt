@@ -2,3 +2,11 @@ django==2.2.13
 djangorestframework==3.9.1
 postgresql==10.15
 psycopg2-binary==2.8.6
+celery==5.0.5
+sentry==1.1.0
+django-cors-headers==3.7.0
+redis==3.5.3
+djangorestframework_simplejwt==4.4.0
+django-ratelimit==3.0.1
+pyrebase4
+firebase-admin
